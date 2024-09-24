@@ -1,5 +1,6 @@
 import { InputHTMLAttributes } from "react";
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface IProps extends InputHTMLAttributes<HTMLInputElement> {}
 
 const Input = ({ ...rest }: IProps) => {
