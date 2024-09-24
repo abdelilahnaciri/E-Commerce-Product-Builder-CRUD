@@ -1,14 +1,14 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import ProductCard from "./components/ProductCard";
 import { formInputsList, productList } from "./data";
 import Modal from "./components/ui/Modal";
 import Button from "./components/ui/Button";
 import Input from "./components/ui/Input";
 import { IProduct } from "./interfaces";
+import { productValidation } from "./validation";
 
 const App = () => {
-  /* --------- STATE --------- */
-  const [product, setProduct] = useState<IProduct>({
+  const defaultProductObj = {
     title: "",
     description: "",
     imageURL: "",
@@ -18,7 +18,9 @@ const App = () => {
       name: "",
       imageURL: "",
     },
-  });
+  };
+  /* --------- STATE --------- */
+  const [product, setProduct] = useState<IProduct>(defaultProductObj);
   const [isOpen, setIsOpen] = useState(false);
 
   /* --------- HANDLER --------- */
@@ -26,13 +28,28 @@ const App = () => {
   const closeModal = () => setIsOpen(false);
   const onChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { value, name } = event.target;
-    console.log(name);
+    // console.log(name);
     setProduct({
       ...product,
       [name]: value,
     });
-    console.log(product);
+    // console.log(product);
     // console.log(event.target.value);
+  };
+  const submitHandler = (event: FormEvent<HTMLFormElement>): void => {
+    event.preventDefault();
+    const errors = productValidation({
+      title: product.title,
+      description: product.description,
+      imageURL: product.imageURL,
+      price: product.price,
+    });
+    console.log(errors);
+  };
+  const onCancel = () => {
+    console.log("cancel");
+    setProduct(defaultProductObj);
+    closeModal();
   };
 
   /* --------- RENDERS --------- */
@@ -40,7 +57,7 @@ const App = () => {
     <ProductCard key={product.id} product={product} />
   ));
   const renderFormInputList = formInputsList.map((input) => (
-    <div className="flex flex-col">
+    <div className="flex flex-col" key={input.id}>
       <label
         htmlFor={input.id}
         className="mb-[2px] text-sm font-medium text-gray-700"
@@ -66,13 +83,18 @@ const App = () => {
         {renderProductList}
       </div>
       <Modal isOpen={isOpen} closeModal={closeModal} title="ADD A NEW PRODUCT">
-        <form className="space-y-3">
+        <form className="space-y-3" onSubmit={submitHandler}>
           {renderFormInputList}
           <div className="flex items-center space-x-3">
             <Button className="bg-indigo-700 hover:bg-indigo-800">
+              Submit
+            </Button>
+            <Button
+              className="bg-gray-300 hover:bg-gray-700"
+              onClick={onCancel}
+            >
               Cancel
             </Button>
-            <Button className="bg-gray-300 hover:bg-gray-700">Submit</Button>
           </div>
         </form>
       </Modal>
