@@ -6,6 +6,7 @@ import Button from "./components/ui/Button";
 import Input from "./components/ui/Input";
 import { IProduct } from "./interfaces";
 import { productValidation } from "./validation";
+import ErrorMessage from "./components/ErrorMessage";
 
 const App = () => {
   const defaultProductObj = {
@@ -22,6 +23,13 @@ const App = () => {
   /* --------- STATE --------- */
   const [product, setProduct] = useState<IProduct>(defaultProductObj);
   const [isOpen, setIsOpen] = useState(false);
+  const [errors, setErrors] = useState({
+    title: "",
+    description: "",
+    imageURL: "",
+    price: "",
+  });
+  // console.log("errors", errors);
 
   /* --------- HANDLER --------- */
   const openModal = () => setIsOpen(true);
@@ -33,23 +41,36 @@ const App = () => {
       ...product,
       [name]: value,
     });
+    setErrors({
+      ...errors,
+      [name]: "",
+    });
     // console.log(product);
     // console.log(event.target.value);
-  };
-  const submitHandler = (event: FormEvent<HTMLFormElement>): void => {
-    event.preventDefault();
-    const errors = productValidation({
-      title: product.title,
-      description: product.description,
-      imageURL: product.imageURL,
-      price: product.price,
-    });
-    console.log(errors);
   };
   const onCancel = () => {
     console.log("cancel");
     setProduct(defaultProductObj);
     closeModal();
+  };
+  const submitHandler = (event: FormEvent<HTMLFormElement>): void => {
+    event.preventDefault();
+    const { title, description, imageURL, price } = product;
+    const errors = productValidation({
+      title,
+      description,
+      imageURL,
+      price,
+    });
+    // console.log(errors);
+    const hasErrorMsg =
+      Object.values(errors).some((value) => value === "") &&
+      Object.values(errors).every((value) => value === "");
+    if (!hasErrorMsg) {
+      setErrors(errors);
+      return;
+    }
+    console.log("SEND THIS PRODUCT TO OUR SERVER");
   };
 
   /* --------- RENDERS --------- */
@@ -71,6 +92,7 @@ const App = () => {
         value={product[input.name]}
         onChange={onChangeHandler}
       />
+      <ErrorMessage msg={errors[input.name]} />
     </div>
   ));
 
@@ -90,6 +112,7 @@ const App = () => {
               Submit
             </Button>
             <Button
+              type="button"
               className="bg-gray-300 hover:bg-gray-700"
               onClick={onCancel}
             >
