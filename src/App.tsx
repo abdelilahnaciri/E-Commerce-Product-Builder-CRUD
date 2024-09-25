@@ -1,12 +1,13 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import ProductCard from "./components/ProductCard";
-import { formInputsList, productList } from "./data";
+import { colors, formInputsList, productList } from "./data";
 import Modal from "./components/ui/Modal";
 import Button from "./components/ui/Button";
 import Input from "./components/ui/Input";
 import { IProduct } from "./interfaces";
 import { productValidation } from "./validation";
 import ErrorMessage from "./components/ErrorMessage";
+import CircleColor from "./components/CircleColor";
 
 const App = () => {
   const defaultProductObj = {
@@ -29,7 +30,8 @@ const App = () => {
     imageURL: "",
     price: "",
   });
-  // console.log("errors", errors);
+  const [tempColors, setTempColor] = useState<string[]>([]);
+  console.log(tempColors);
 
   /* --------- HANDLER --------- */
   const openModal = () => setIsOpen(true);
@@ -95,6 +97,19 @@ const App = () => {
       <ErrorMessage msg={errors[input.name]} />
     </div>
   ));
+  const renderProductColors = colors.map((color) => (
+    <CircleColor
+      key={color}
+      color={color}
+      onClick={() => {
+        if (tempColors.includes(color)) {
+          setTempColor((prev) => prev.filter((item) => item !== color));
+          return;
+        }
+        setTempColor((prev) => [...prev, color]);
+      }}
+    />
+  ));
 
   return (
     <main className="container">
@@ -107,6 +122,20 @@ const App = () => {
       <Modal isOpen={isOpen} closeModal={closeModal} title="ADD A NEW PRODUCT">
         <form className="space-y-3" onSubmit={submitHandler}>
           {renderFormInputList}
+          <div className="flex items-center flex-wrap space-x-2">
+            {renderProductColors}
+          </div>
+          <div className="flex items-center flex-wrap space-x-2">
+            {tempColors.map((color) => (
+              <span
+                key={color}
+                className="p-1 mr-1 mb-1 text-xs rounded-md text-white"
+                style={{ backgroundColor: color }}
+              >
+                {color}
+              </span>
+            ))}
+          </div>
           <div className="flex items-center space-x-3">
             <Button className="bg-indigo-700 hover:bg-indigo-800">
               Submit
