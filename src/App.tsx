@@ -8,6 +8,7 @@ import { IProduct } from "./interfaces";
 import { productValidation } from "./validation";
 import ErrorMessage from "./components/ErrorMessage";
 import CircleColor from "./components/CircleColor";
+import { v4 as uuid } from "uuid";
 
 const App = () => {
   const defaultProductObj = {
@@ -22,6 +23,7 @@ const App = () => {
     },
   };
   /* --------- STATE --------- */
+  const [products, setProducts] = useState<IProduct[]>(productList);
   const [product, setProduct] = useState<IProduct>(defaultProductObj);
   const [isOpen, setIsOpen] = useState(false);
   const [errors, setErrors] = useState({
@@ -31,7 +33,7 @@ const App = () => {
     price: "",
   });
   const [tempColors, setTempColor] = useState<string[]>([]);
-  console.log(tempColors);
+  // console.log(tempColors);
 
   /* --------- HANDLER --------- */
   const openModal = () => setIsOpen(true);
@@ -72,11 +74,19 @@ const App = () => {
       setErrors(errors);
       return;
     }
+    setProducts((prev) => [
+      { ...product, id: uuid(), colors: tempColors },
+      ...prev,
+    ]);
+    setProduct(defaultProductObj);
+    setTempColor([]);
+    closeModal();
+    // console.log({ ...product, id: uuid(), colors: tempColors });
     console.log("SEND THIS PRODUCT TO OUR SERVER");
   };
 
   /* --------- RENDERS --------- */
-  const renderProductList = productList.map((product) => (
+  const renderProductList = products.map((product) => (
     <ProductCard key={product.id} product={product} />
   ));
   const renderFormInputList = formInputsList.map((input) => (
