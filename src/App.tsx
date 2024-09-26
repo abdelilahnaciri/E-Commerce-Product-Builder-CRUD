@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import ProductCard from "./components/ProductCard";
-import { colors, formInputsList, productList } from "./data";
+import { categories, colors, formInputsList, productList } from "./data";
 import Modal from "./components/ui/Modal";
 import Button from "./components/ui/Button";
 import Input from "./components/ui/Input";
@@ -32,8 +32,10 @@ const App = () => {
     description: "",
     imageURL: "",
     price: "",
+    tempColors: "",
   });
   const [tempColors, setTempColor] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState(categories[0]);
   // console.log(tempColors);
 
   /* --------- HANDLER --------- */
@@ -66,6 +68,7 @@ const App = () => {
       description,
       imageURL,
       price,
+      tempColors,
     });
     // console.log(errors);
     const hasErrorMsg =
@@ -76,7 +79,12 @@ const App = () => {
       return;
     }
     setProducts((prev) => [
-      { ...product, id: uuid(), colors: tempColors },
+      {
+        ...product,
+        id: uuid(),
+        colors: tempColors,
+        category: selectedCategory,
+      },
       ...prev,
     ]);
     setProduct(defaultProductObj);
@@ -133,11 +141,15 @@ const App = () => {
       <Modal isOpen={isOpen} closeModal={closeModal} title="ADD A NEW PRODUCT">
         <form className="space-y-3" onSubmit={submitHandler}>
           {renderFormInputList}
-          <Select />
+          <Select
+            selected={selectedCategory}
+            setSelected={setSelectedCategory}
+          />
           <div className="flex items-center flex-wrap space-x-2">
             {renderProductColors}
           </div>
           <div className="flex items-center flex-wrap space-x-2">
+            {tempColors.length <= 0 && <ErrorMessage msg={errors.tempColors} />}
             {tempColors.map((color) => (
               <span
                 key={color}
