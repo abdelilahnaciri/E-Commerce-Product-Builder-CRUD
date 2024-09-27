@@ -92,7 +92,7 @@ const App = () => {
       price,
       tempColors,
     });
-    // console.log(errors);
+    console.log(errors);
     const hasErrorMsg =
       Object.values(errors).some((value) => value === "") &&
       Object.values(errors).every((value) => value === "");
@@ -144,7 +144,10 @@ const App = () => {
     // ]);
     console.log("submit clicked");
     const updatedProducts = [...products];
-    updatedProducts[productToEditIdx] = productToEdit;
+    updatedProducts[productToEditIdx] = {
+      ...productToEdit,
+      colors: tempColors.concat(productToEdit.colors),
+    };
     setProducts(updatedProducts);
 
     setProductToEdit(defaultProductObj);
@@ -190,6 +193,16 @@ const App = () => {
       onClick={() => {
         if (tempColors.includes(color)) {
           setTempColor((prev) => prev.filter((item) => item !== color));
+          return;
+        }
+        if (tempColors.concat(productToEdit.colors).includes(color)) {
+          const arr = productToEdit.colors;
+          delete arr[arr.indexOf(color)];
+          setTempColor((prev) =>
+            prev
+              .concat(arr)
+              .filter((item, index) => prev.indexOf(item) === index)
+          );
           return;
         }
         setTempColor((prev) => [...prev, color]);
@@ -292,11 +305,11 @@ const App = () => {
             setSelected={setSelectedCategory}
           /> */}
 
-          {/* <div className="flex items-center flex-wrap space-x-2">
+          <div className="flex items-center flex-wrap space-x-2">
             {renderProductColors}
           </div>
           <div className="flex items-center flex-wrap space-x-2">
-            {tempColors.map((color) => (
+            {tempColors.concat(productToEdit.colors).map((color) => (
               <span
                 key={color}
                 className="p-1 mr-1 mb-1 text-xs rounded-md text-white"
@@ -306,7 +319,7 @@ const App = () => {
               </span>
             ))}
             {tempColors.length <= 0 && <ErrorMessage msg={errors.tempColors} />}
-          </div> */}
+          </div>
           <div className="flex items-center space-x-3">
             <Button className="bg-indigo-700 hover:bg-indigo-800" type="submit">
               Submit
