@@ -29,6 +29,7 @@ const App = () => {
   const [product, setProduct] = useState<IProduct>(defaultProductObj);
   const [productToEdit, setProductToEdit] =
     useState<IProduct>(defaultProductObj);
+  const [productToEditIdx, setProductToEditIdx] = useState<number>(0);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenEditModal, setIsOpenEditModal] = useState(false);
   const [errors, setErrors] = useState({
@@ -41,7 +42,7 @@ const App = () => {
   const [tempColors, setTempColor] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
   // console.log(tempColors);
-  console.log("product to edit: ", productToEdit);
+  // console.log("product to edit idx: ", productToEditIdx);
 
   /* --------- HANDLER --------- */
   const openModal = () => setIsOpen(true);
@@ -122,12 +123,12 @@ const App = () => {
       description,
       imageURL,
       price,
-      tempColors,
     });
     // console.log(errors);
     const hasErrorMsg =
       Object.values(errors).some((value) => value === "") &&
       Object.values(errors).every((value) => value === "");
+
     if (!hasErrorMsg) {
       setErrors(errors);
       return;
@@ -141,20 +142,27 @@ const App = () => {
     //   },
     //   ...prev,
     // ]);
+    console.log("submit clicked");
+    const updatedProducts = [...products];
+    updatedProducts[productToEditIdx] = productToEdit;
+    setProducts(updatedProducts);
+
     setProductToEdit(defaultProductObj);
     setTempColor([]);
-    closeModal();
+    closeEditModal();
     // console.log({ ...product, id: uuid(), colors: tempColors });
     console.log("SEND THIS PRODUCT TO OUR SERVER");
   };
 
   /* --------- RENDERS --------- */
-  const renderProductList = products.map((product) => (
+  const renderProductList = products.map((product, idx) => (
     <ProductCard
       key={product.id}
       product={product}
       setProductToEdit={setProductToEdit}
       openEditModal={openEditModal}
+      idx={idx}
+      setProductToEditIdx={setProductToEditIdx}
     />
   ));
   const renderFormInputList = formInputsList.map((input) => (
@@ -300,7 +308,7 @@ const App = () => {
             {tempColors.length <= 0 && <ErrorMessage msg={errors.tempColors} />}
           </div> */}
           <div className="flex items-center space-x-3">
-            <Button className="bg-indigo-700 hover:bg-indigo-800">
+            <Button className="bg-indigo-700 hover:bg-indigo-800" type="submit">
               Submit
             </Button>
             <Button
