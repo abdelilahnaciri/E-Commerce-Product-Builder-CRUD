@@ -10,6 +10,7 @@ import ErrorMessage from "./components/ErrorMessage";
 import CircleColor from "./components/CircleColor";
 import { v4 as uuid } from "uuid";
 import Select from "./components/ui/Select";
+import { TProductNames } from "./types";
 
 const App = () => {
   const defaultProductObj = {
@@ -115,7 +116,7 @@ const App = () => {
   };
   const submitEditHandler = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    const { title, description, imageURL, price } = product;
+    const { title, description, imageURL, price } = productToEdit;
     const errors = productValidation({
       title,
       description,
@@ -131,16 +132,16 @@ const App = () => {
       setErrors(errors);
       return;
     }
-    setProducts((prev) => [
-      {
-        ...product,
-        id: uuid(),
-        colors: tempColors,
-        category: selectedCategory,
-      },
-      ...prev,
-    ]);
-    setProduct(defaultProductObj);
+    // setProducts((prev) => [
+    //   {
+    //     ...product,
+    //     id: uuid(),
+    //     colors: tempColors,
+    //     category: selectedCategory,
+    //   },
+    //   ...prev,
+    // ]);
+    setProductToEdit(defaultProductObj);
     setTempColor([]);
     closeModal();
     // console.log({ ...product, id: uuid(), colors: tempColors });
@@ -187,6 +188,30 @@ const App = () => {
       }}
     />
   ));
+  const renderProductEditWithErrorMsg = (
+    id: string,
+    label: string,
+    name: TProductNames
+  ) => {
+    return (
+      <div className="flex flex-col">
+        <label
+          htmlFor={id}
+          className="mb-[2px] text-sm font-medium text-gray-700"
+        >
+          {label}
+        </label>
+        <Input
+          type="text"
+          id={id}
+          name={name}
+          value={productToEdit[name]}
+          onChange={onChangeEditHandler}
+        />
+        <ErrorMessage msg={errors[name]} />
+      </div>
+    );
+  };
 
   return (
     <main className="container">
@@ -242,38 +267,18 @@ const App = () => {
         title="EDIT THIS PRODUCT"
       >
         <form className="space-y-3" onSubmit={submitEditHandler}>
-          <div className="flex flex-col">
-            <label
-              htmlFor={"title"}
-              className="mb-[2px] text-sm font-medium text-gray-700"
-            >
-              Product Title
-            </label>
-            <Input
-              type="text"
-              id={"title"}
-              name={"title"}
-              value={productToEdit.title}
-              onChange={onChangeEditHandler}
-            />
-            <ErrorMessage msg={""} />
-          </div>
-          <div className="flex flex-col">
-            <label
-              htmlFor={"title"}
-              className="mb-[2px] text-sm font-medium text-gray-700"
-            >
-              Product Description
-            </label>
-            <Input
-              type="text"
-              id={"description"}
-              name={"description"}
-              value={productToEdit.description}
-              onChange={onChangeEditHandler}
-            />
-            <ErrorMessage msg={""} />
-          </div>
+          {renderProductEditWithErrorMsg("title", "Product Title", "title")}
+          {renderProductEditWithErrorMsg(
+            "description",
+            "Product Description",
+            "description"
+          )}
+          {renderProductEditWithErrorMsg(
+            "imageURL",
+            "Product Image URL",
+            "imageURL"
+          )}
+          {renderProductEditWithErrorMsg("price", "Product Price", "price")}
           {/* <Select
             selected={selectedCategory}
             setSelected={setSelectedCategory}
