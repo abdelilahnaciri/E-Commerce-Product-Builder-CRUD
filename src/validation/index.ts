@@ -11,6 +11,7 @@ export const productValidation = (product: {
   imageURL: string;
   price: string;
   tempColors?: string[];
+  colors?: string[];
 }) => {
   // ** return an object
   const errors: {
@@ -48,8 +49,10 @@ export const productValidation = (product: {
   if (!product.price.trim() || isNaN(Number(product.price))) {
     errors.price = "Valid price is required!";
   }
+
   if (product.tempColors && product.tempColors.length <= 0) {
     errors.tempColors = "Colors is required";
   }
+
   return errors;
 };

@@ -38,6 +38,7 @@ const App = () => {
     imageURL: "",
     price: "",
     tempColors: "",
+    // tempColorsEdited: "",
   });
   const [tempColors, setTempColor] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
@@ -92,6 +93,7 @@ const App = () => {
       price,
       tempColors,
     });
+    // errors.tempColorsEdited = "";
     // console.log(errors);
     const hasErrorMsg =
       Object.values(errors).some((value) => value === "") &&
@@ -117,21 +119,24 @@ const App = () => {
   };
   const submitEditHandler = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    const { title, description, imageURL, price } = productToEdit;
+    const { title, description, imageURL, price, colors } = productToEdit;
     const errors = productValidation({
       title,
       description,
       imageURL,
       price,
       tempColors,
+      colors,
     });
+    // console.log(errors);
     const hasErrorMsg =
       Object.values(errors).some((value) => value === "") &&
       Object.values(errors).every((value) => value === "");
-
     if (!hasErrorMsg) {
       setErrors(errors);
-      return;
+      if (colors.filter(Boolean).length > 0) {
+        errors.tempColors = "";
+      } else return;
     }
     const updatedProducts = [...products];
     updatedProducts[productToEditIdx] = {
@@ -143,7 +148,7 @@ const App = () => {
     setProductToEdit(defaultProductObj);
     setTempColor([]);
     closeEditModal();
-    console.log("UPDATE THIS PRODUCT");
+    console.log("THIS PRODUCT UPDATED SUCCESSFULLY");
   };
 
   /* --------- RENDERS --------- */
@@ -299,7 +304,7 @@ const App = () => {
                 {color}
               </span>
             ))}
-            {tempColors.length <= 0 && <ErrorMessage msg={errors.tempColors} />}
+            {errors.tempColors && <ErrorMessage msg={errors.tempColors} />}
           </div>
           <div className="flex items-center space-x-3">
             <Button className="bg-indigo-700 hover:bg-indigo-800" type="submit">
