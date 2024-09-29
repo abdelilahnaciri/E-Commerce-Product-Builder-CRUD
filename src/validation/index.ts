@@ -10,8 +10,7 @@ export const productValidation = (product: {
   description: string;
   imageURL: string;
   price: string;
-  tempColors?: string[];
-  colors?: string[];
+  tempColors: string[];
 }) => {
   // ** return an object
   const errors: {

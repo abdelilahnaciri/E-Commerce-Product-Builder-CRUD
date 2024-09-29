@@ -126,7 +126,6 @@ const App = () => {
       imageURL,
       price,
       tempColors,
-      colors,
     });
     // console.log(errors);
     const hasErrorMsg =
@@ -290,6 +289,13 @@ const App = () => {
             "imageURL"
           )}
           {renderProductEditWithErrorMsg("price", "Product Price", "price")}
+
+          <Select
+            selected={productToEdit.category}
+            setSelected={(value) =>
+              setProductToEdit({ ...productToEdit, category: value })
+            }
+          />
 
           <div className="flex items-center flex-wrap space-x-2">
             {renderProductColors}
