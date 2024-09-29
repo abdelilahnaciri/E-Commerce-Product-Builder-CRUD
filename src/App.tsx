@@ -92,7 +92,7 @@ const App = () => {
       price,
       tempColors,
     });
-    console.log(errors);
+    // console.log(errors);
     const hasErrorMsg =
       Object.values(errors).some((value) => value === "") &&
       Object.values(errors).every((value) => value === "");
@@ -123,8 +123,8 @@ const App = () => {
       description,
       imageURL,
       price,
+      tempColors,
     });
-    // console.log(errors);
     const hasErrorMsg =
       Object.values(errors).some((value) => value === "") &&
       Object.values(errors).every((value) => value === "");
@@ -133,16 +133,6 @@ const App = () => {
       setErrors(errors);
       return;
     }
-    // setProducts((prev) => [
-    //   {
-    //     ...product,
-    //     id: uuid(),
-    //     colors: tempColors,
-    //     category: selectedCategory,
-    //   },
-    //   ...prev,
-    // ]);
-    console.log("submit clicked");
     const updatedProducts = [...products];
     updatedProducts[productToEditIdx] = {
       ...productToEdit,
@@ -153,8 +143,7 @@ const App = () => {
     setProductToEdit(defaultProductObj);
     setTempColor([]);
     closeEditModal();
-    // console.log({ ...product, id: uuid(), colors: tempColors });
-    console.log("SEND THIS PRODUCT TO OUR SERVER");
+    console.log("UPDATE THIS PRODUCT");
   };
 
   /* --------- RENDERS --------- */
@@ -195,16 +184,12 @@ const App = () => {
           setTempColor((prev) => prev.filter((item) => item !== color));
           return;
         }
-        if (tempColors.concat(productToEdit.colors).includes(color)) {
-          const arr = productToEdit.colors;
-          delete arr[arr.indexOf(color)];
-          setTempColor((prev) =>
-            prev
-              .concat(arr)
-              .filter((item, index) => prev.indexOf(item) === index)
-          );
+        if (productToEdit.colors.includes(color)) {
+          delete productToEdit.colors[productToEdit.colors.indexOf(color)];
+          setTempColor((prev) => prev.filter((item) => item !== color));
           return;
         }
+        errors.tempColors = "";
         setTempColor((prev) => [...prev, color]);
       }}
     />
@@ -300,10 +285,6 @@ const App = () => {
             "imageURL"
           )}
           {renderProductEditWithErrorMsg("price", "Product Price", "price")}
-          {/* <Select
-            selected={selectedCategory}
-            setSelected={setSelectedCategory}
-          /> */}
 
           <div className="flex items-center flex-wrap space-x-2">
             {renderProductColors}
