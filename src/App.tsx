@@ -296,7 +296,6 @@ const App = () => {
               setProductToEdit({ ...productToEdit, category: value })
             }
           />
-
           <div className="flex items-center flex-wrap space-x-2">
             {renderProductColors}
           </div>
