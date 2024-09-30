@@ -1,5 +1,5 @@
 import { IProduct } from "../interfaces";
-import { txtSlicer } from "../utils/functions";
+import { numberWithCommas, txtSlicer } from "../utils/functions";
 import CircleColor from "./CircleColor";
 import Image from "./Image";
 import Button from "./ui/Button";
@@ -10,6 +10,7 @@ interface IProps {
   openEditModal: () => void;
   idx: number;
   setProductToEditIdx: (value: number) => void;
+  openConfirmModal: () => void;
 }
 
 const ProductCard = ({
@@ -18,6 +19,7 @@ const ProductCard = ({
   openEditModal,
   idx,
   setProductToEditIdx,
+  openConfirmModal,
 }: IProps) => {
   const { title, description, imageURL, price, colors, category } = product;
 
@@ -32,6 +34,11 @@ const ProductCard = ({
     openEditModal();
     setProductToEditIdx(idx);
     // console.log(idx);
+  };
+
+  const onRemove = () => {
+    setProductToEdit(product);
+    openConfirmModal();
   };
   return (
     <div className="max-w-sm md:max-w-lg mx-auto md:mx-0 border rounded-md p-2 flex flex-col">
@@ -48,7 +55,9 @@ const ProductCard = ({
         {renderProductColors}
       </div>
       <div className="flex items-center justify-between">
-        <span className="text-lg text-indigo-600 font-semibold">${price}</span>
+        <span className="text-lg text-indigo-600 font-semibold">
+          ${numberWithCommas(price)}
+        </span>
         <Image
           imageURL={category.imageURL}
           alt={category.name}
@@ -63,7 +72,9 @@ const ProductCard = ({
         >
           EDIT
         </Button>
-        <Button className="bg-red-700 hover:bg-red-800">DELETE</Button>
+        <Button className="bg-red-700 hover:bg-red-800" onClick={onRemove}>
+          DELETE
+        </Button>
       </div>
     </div>
   );

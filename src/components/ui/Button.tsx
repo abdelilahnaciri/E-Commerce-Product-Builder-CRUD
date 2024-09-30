@@ -6,11 +6,11 @@ interface IProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   width?: "w-full" | "w-fit";
 }
 
-const Button = ({ children, className, ...rest }: IProps) => {
+const Button = ({ children, className, width, ...rest }: IProps) => {
   // console.log({ rest });
   return (
     <button
-      className={`${className} p-2 w-full rounded-md text-white`}
+      className={`${className} ${width} p-2 w-full rounded-md text-white font-medium`}
       {...rest}
     >
       {children}
