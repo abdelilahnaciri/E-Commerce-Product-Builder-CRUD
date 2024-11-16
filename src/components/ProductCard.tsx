@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { IProduct } from "../interfaces";
 import { numberWithCommas, txtSlicer } from "../utils/functions";
 import CircleColor from "./CircleColor";
@@ -40,6 +41,7 @@ const ProductCard = ({
     setProductToEdit(product);
     openConfirmModal();
   };
+
   return (
     <div className="max-w-sm md:max-w-lg mx-auto md:mx-0 border rounded-md p-2 flex flex-col">
       <Image
@@ -80,4 +82,4 @@ const ProductCard = ({
   );
 };
 
-export default ProductCard;
+export default memo(ProductCard);
