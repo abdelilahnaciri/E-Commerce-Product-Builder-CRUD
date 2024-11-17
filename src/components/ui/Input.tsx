@@ -1,4 +1,4 @@
-import { InputHTMLAttributes } from "react";
+import { InputHTMLAttributes, memo } from "react";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface IProps extends InputHTMLAttributes<HTMLInputElement> {}
@@ -15,4 +15,4 @@ const Input = ({ ...rest }: IProps) => {
   );
 };
 
-export default Input;
+export default memo(Input);
