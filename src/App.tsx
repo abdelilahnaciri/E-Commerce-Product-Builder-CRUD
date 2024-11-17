@@ -58,20 +58,17 @@ const App = () => {
     setIsOpenConfirmModal(true);
   }, []);
   const closeConfirmModal = () => setIsOpenConfirmModal(false);
-  const onChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value, name } = event.target;
-    // console.log(name);
-    setProduct({
-      ...product,
-      [name]: value,
-    });
-    setErrors({
-      ...errors,
-      [name]: "",
-    });
-    // console.log(product);
-    // console.log(event.target.value);
-  };
+  const onChangeHandler = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const { value, name } = event.target;
+      // console.log(name);
+      setProduct((prev) => ({ ...prev, [name]: value }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+      // console.log(product);
+      // console.log(event.target.value);
+    },
+    []
+  );
   const onChangeEditHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { value, name } = event.target;
     // console.log(name);
